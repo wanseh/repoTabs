@@ -70,6 +70,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
     context.subscriptions.push(
         vscode.commands.registerCommand('repoTabs.refresh', () => {
             repoTabManager.refresh();
+            statusBarManager.refresh();
             vscode.window.showInformationMessage('RepoTabs: Refreshed');
         })
     );
@@ -142,4 +143,3 @@ export function deactivate(): void {
     vscode.commands.executeCommand('setContext', 'repoTabs.active', false);
     console.log('RepoTabs: Deactivated');
 }
-

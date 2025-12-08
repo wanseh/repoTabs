@@ -36,20 +36,16 @@ export interface PersistedState {
 
 export interface RepoTabsConfig {
     enabled: boolean;
-    showFileCount: boolean;
     autoSwitchOnFileOpen: boolean;
     preserveEditorsAcrossTabs: boolean;
-    showGitStatus: boolean;
 }
 
 export function getConfig(): RepoTabsConfig {
     const config = vscode.workspace.getConfiguration('repoTabs');
     return {
         enabled: config.get<boolean>('enabled', true),
-        showFileCount: config.get<boolean>('showFileCount', true),
         autoSwitchOnFileOpen: config.get<boolean>('autoSwitchOnFileOpen', false),
         preserveEditorsAcrossTabs: config.get<boolean>('preserveEditorsAcrossTabs', false),
-        showGitStatus: config.get<boolean>('showGitStatus', true),
     };
 }
 

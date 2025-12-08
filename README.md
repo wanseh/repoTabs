@@ -4,13 +4,13 @@ Browser-style workspace tabs for VS Code / Cursor. Isolate editors, explorer foc
 
 ## Features
 
-- **🗂️ Repo Tabs in Status Bar** - Visual tabs for each workspace folder
-- **📑 Editor Isolation** - Each repo remembers its own open files
-- **🔄 State Persistence** - Tabs and open editors persist across sessions
-- **⌨️ Keyboard Shortcuts** - `Cmd+1-9` (Mac) / `Ctrl+1-9` (Win/Linux) to switch
-- **📍 Explorer Focus** - Automatically focuses explorer on the active repo
-- **🔀 Git Integration** - Shows branch name and dirty status per repo
-- **🎨 Project Icons** - Auto-detects project type (Angular, Node, Python, etc.)
+- **Repo Tabs in Status Bar** - Visual tabs for each workspace folder
+- **Editor Isolation** - Each repo remembers its own open files
+- **State Persistence** - Tabs and open editors persist across sessions
+- **Keyboard Shortcuts** - `Cmd+1-9` (Mac) / `Ctrl+1-9` (Win/Linux) to switch
+- **Explorer Focus** - Automatically focuses explorer on the active repo
+- **Git Integration** - Shows branch name and dirty status per repo
+- **Project Icons** - Auto-detects project type (Angular, Node, Python, etc.)
 
 ## How It Works
 
@@ -63,7 +63,7 @@ Then install the `.vsix` file:
 Tabs appear in the left side of the status bar:
 
 ```
-[1] 📦 my-api (3) main● | [2] 🅰️ my-frontend (5) dev | [3] 🐍 scripts
+[1] my-api (3) main● | [2] my-frontend (5) dev | [3] scripts
      ^    ^     ^   ^          ^        ^
      |    |     |   |          |        |
    index icon name files    branch   dirty
@@ -78,10 +78,8 @@ Tabs appear in the left side of the status bar:
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `repoTabs.enabled` | `true` | Enable/disable the extension |
-| `repoTabs.showFileCount` | `true` | Show open file count in tabs |
 | `repoTabs.autoSwitchOnFileOpen` | `false` | Auto-switch when opening a file from another repo |
 | `repoTabs.preserveEditorsAcrossTabs` | `false` | Keep editors open when switching (only change focus) |
-| `repoTabs.showGitStatus` | `true` | Show git branch/status on tabs |
 
 ## Commands
 
@@ -94,23 +92,23 @@ Tabs appear in the left side of the status bar:
 
 ## Project Icons
 
-RepoTabs auto-detects project types and shows appropriate icons:
+RepoTabs auto-detects project types and shows appropriate icons using VS Code codicons:
 
 | Icon | Project Type |
 |------|-------------|
-| 🅰️ | Angular |
-| ▲ | Next.js |
-| 💚 | Nuxt |
-| 🔥 | Svelte |
-| ⚡ | Vite |
-| 📦 | Node.js |
-| 🦀 | Rust |
-| 🐹 | Go |
-| 🐍 | Python |
-| ☕ | Java |
-| 💎 | Ruby |
-| 📁 | Git repo |
-| 📂 | Folder |
+| `$(symbol-class)` | Angular |
+| `$(file-code)` | Next.js |
+| `$(file-code)` | Nuxt |
+| `$(file-code)` | Svelte |
+| `$(zap)` | Vite |
+| `$(package)` | Node.js |
+| `$(gear)` | Rust |
+| `$(code)` | Go |
+| `$(file-code)` | Python |
+| `$(file-code)` | Java |
+| `$(file-code)` | Ruby |
+| `$(git-branch)` | Git repo |
+| `$(folder)` | Folder |
 
 ## Known Limitations
 

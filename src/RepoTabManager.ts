@@ -33,22 +33,38 @@ export class RepoTabManager {
 
     /**
      * Sync tabs with current workspace folders
+     * Now scans subdirectories within workspace roots to find repos
      */
     syncWithWorkspace(): void {
         const workspaceFolders = vscode.workspace.workspaceFolders || [];
+        const discoveredRepos = new Set<string>();
 
-        // Add new workspace folders
-        for (const folder of workspaceFolders) {
-            const exists = this.tabs.find(t => t.folderPath === folder.uri.fsPath);
-            if (!exists) {
-                this.tabs.push(this.createTabFromFolder(folder));
+        // For each workspace folder, scan subdirectories for repos
+        for (const workspaceFolder of workspaceFolders) {
+            const repoPaths = this.discoverReposInFolder(workspaceFolder.uri.fsPath);
+            for (const repoPath of repoPaths) {
+                discoveredRepos.add(repoPath);
             }
         }
 
-        // Remove tabs for folders no longer in workspace
-        this.tabs = this.tabs.filter(tab =>
-            workspaceFolders.some((f: vscode.WorkspaceFolder) => f.uri.fsPath === tab.folderPath)
-        );
+        // Add new repos as tabs
+        for (const repoPath of discoveredRepos) {
+            const exists = this.tabs.find(t => t.folderPath === repoPath);
+            if (!exists) {
+                this.tabs.push(this.createTabFromPath(repoPath));
+            }
+        }
+
+        // Remove tabs for repos that no longer exist
+        this.tabs = this.tabs.filter(tab => {
+            // Keep tab if the folder still exists and is still a valid repo
+            if (!fs.existsSync(tab.folderPath)) return false;
+            if (!this.isRepo(tab.folderPath)) return false;
+            // Check if it's still within any workspace folder
+            return workspaceFolders.some((f: vscode.WorkspaceFolder) => 
+                tab.folderPath.startsWith(f.uri.fsPath)
+            );
+        });
 
         // Update git status for all tabs
         this.updateAllGitStatus();
@@ -57,50 +73,126 @@ export class RepoTabManager {
         this.emit();
     }
 
-    private createTabFromFolder(folder: vscode.WorkspaceFolder): RepoTab {
+    /**
+     * Discover repos (subdirectories) within a workspace folder
+     */
+    private discoverReposInFolder(workspacePath: string): string[] {
+        const repos: string[] = [];
+        
+        try {
+            if (!fs.existsSync(workspacePath)) return repos;
+            
+            const entries = fs.readdirSync(workspacePath, { withFileTypes: true });
+            
+            for (const entry of entries) {
+                // Skip hidden folders and common non-repo folders
+                if (entry.name.startsWith('.') || 
+                    entry.name === 'node_modules' || 
+                    entry.name === 'out' ||
+                    entry.name === 'dist' ||
+                    entry.name === 'build') {
+                    continue;
+                }
+                
+                if (entry.isDirectory()) {
+                    const subfolderPath = path.join(workspacePath, entry.name);
+                    if (this.isRepo(subfolderPath)) {
+                        repos.push(subfolderPath);
+                    }
+                }
+            }
+        } catch {
+            // Ignore fs errors
+        }
+        
+        return repos;
+    }
+
+    /**
+     * Check if a folder is a repo (has .git, package.json, or other indicators)
+     */
+    private isRepo(folderPath: string): boolean {
+        try {
+            // Check for .git (most reliable indicator)
+            if (fs.existsSync(path.join(folderPath, '.git'))) return true;
+            
+            // Check for package.json (Node.js project)
+            if (fs.existsSync(path.join(folderPath, 'package.json'))) return true;
+            
+            // Check for other common project files
+            if (fs.existsSync(path.join(folderPath, 'Cargo.toml'))) return true; // Rust
+            if (fs.existsSync(path.join(folderPath, 'go.mod'))) return true; // Go
+            if (fs.existsSync(path.join(folderPath, 'pyproject.toml'))) return true; // Python
+            if (fs.existsSync(path.join(folderPath, 'requirements.txt'))) return true; // Python
+            if (fs.existsSync(path.join(folderPath, 'pom.xml'))) return true; // Java Maven
+            if (fs.existsSync(path.join(folderPath, 'build.gradle'))) return true; // Java Gradle
+            if (fs.existsSync(path.join(folderPath, 'Gemfile'))) return true; // Ruby
+            if (fs.existsSync(path.join(folderPath, 'angular.json'))) return true; // Angular
+            if (fs.existsSync(path.join(folderPath, 'next.config.js')) || 
+                fs.existsSync(path.join(folderPath, 'next.config.mjs'))) return true; // Next.js
+            
+            return false;
+        } catch {
+            return false;
+        }
+    }
+
+    private createTabFromPath(folderPath: string): RepoTab {
+        const folderName = path.basename(folderPath);
+        const folderUri = vscode.Uri.file(folderPath).toString();
+        
         return {
             id: `repo_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
-            name: folder.name,
-            folderPath: folder.uri.fsPath,
-            folderUri: folder.uri.toString(),
+            name: folderName,
+            folderPath: folderPath,
+            folderUri: folderUri,
             openEditors: [],
             activeEditor: null,
             viewStates: {},
             gitBranch: null,
             gitDirty: false,
-            icon: this.detectProjectIcon(folder.uri.fsPath),
+            icon: this.detectProjectIcon(folderPath),
         };
+    }
+
+    private createTabFromFolder(folder: vscode.WorkspaceFolder): RepoTab {
+        return this.createTabFromPath(folder.uri.fsPath);
     }
 
     private detectProjectIcon(folderPath: string): string {
         try {
-            if (fs.existsSync(path.join(folderPath, 'angular.json'))) return '🅰️';
+            // Framework icons - using VS Code codicons
+            if (fs.existsSync(path.join(folderPath, 'angular.json'))) return '$(symbol-class)'; // Angular
             if (fs.existsSync(path.join(folderPath, 'next.config.js')) ||
-                fs.existsSync(path.join(folderPath, 'next.config.mjs'))) return '▲';
+                fs.existsSync(path.join(folderPath, 'next.config.mjs'))) return '$(file-code)'; // Next.js
             if (fs.existsSync(path.join(folderPath, 'nuxt.config.ts')) ||
-                fs.existsSync(path.join(folderPath, 'nuxt.config.js'))) return '💚';
-            if (fs.existsSync(path.join(folderPath, 'svelte.config.js'))) return '🔥';
-            if (fs.existsSync(path.join(folderPath, 'vite.config.ts')) ||
-                fs.existsSync(path.join(folderPath, 'vite.config.js'))) return '⚡';
-            if (fs.existsSync(path.join(folderPath, 'package.json'))) return '📦';
-            if (fs.existsSync(path.join(folderPath, 'Cargo.toml'))) return '🦀';
-            if (fs.existsSync(path.join(folderPath, 'go.mod'))) return '🐹';
+                fs.existsSync(path.join(folderPath, 'nuxt.config.js'))) return '$(file-code)'; // Nuxt
+            if (fs.existsSync(path.join(folderPath, 'svelte.config.js'))) return '$(file-code)'; // Svelte
+            if (fs.existsSync(path.join(folderPath, 'vite.config.js')) ||
+                fs.existsSync(path.join(folderPath, 'vite.config.ts'))) return '$(zap)'; // Vite
+
+            // Generic JS / Node projects
+            if (fs.existsSync(path.join(folderPath, 'package.json'))) return '$(package)'; // Node.js
+
+            // Language-specific icons
+            if (fs.existsSync(path.join(folderPath, 'Cargo.toml'))) return '$(gear)'; // Rust
+            if (fs.existsSync(path.join(folderPath, 'go.mod'))) return '$(code)'; // Go
             if (fs.existsSync(path.join(folderPath, 'pyproject.toml')) ||
-                fs.existsSync(path.join(folderPath, 'requirements.txt'))) return '🐍';
+                fs.existsSync(path.join(folderPath, 'requirements.txt'))) return '$(file-code)'; // Python
             if (fs.existsSync(path.join(folderPath, 'pom.xml')) ||
-                fs.existsSync(path.join(folderPath, 'build.gradle'))) return '☕';
-            if (fs.existsSync(path.join(folderPath, 'Gemfile'))) return '💎';
-            if (fs.existsSync(path.join(folderPath, '.git'))) return '📁';
+                fs.existsSync(path.join(folderPath, 'build.gradle'))) return '$(file-code)'; // Java
+            if (fs.existsSync(path.join(folderPath, 'Gemfile'))) return '$(file-code)'; // Ruby
+
+            // Git-only repo
+            if (fs.existsSync(path.join(folderPath, '.git'))) return '$(git-branch)'; // Git
+
         } catch {
             // Ignore fs errors
         }
-        return '📂';
+        return '$(folder)'; // Default folder icon
     }
 
     private async updateAllGitStatus(): Promise<void> {
-        const config = getConfig();
-        if (!config.showGitStatus) return;
-
         for (const tab of this.tabs) {
             await this.updateGitStatus(tab);
         }

@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { RepoTabManager } from './RepoTabManager';
-import { RepoTab, getConfig } from './types';
+import { RepoTab } from './types';
 
 interface TabButton {
     statusBarItem: vscode.StatusBarItem;
@@ -12,8 +12,8 @@ export class StatusBarManager {
     private manager: RepoTabManager;
     private disposables: vscode.Disposable[] = [];
 
-    // Priority ensures tabs appear at far left of status bar
-    private static BASE_PRIORITY = 1000;
+    // Priority ensures tabs appear at far left of status bar (higher = more left)
+    private static BASE_PRIORITY = 10000;
 
     constructor(manager: RepoTabManager) {
         this.manager = manager;
@@ -30,7 +30,6 @@ export class StatusBarManager {
     refresh(): void {
         const tabs = this.manager.getTabs();
         const activeTabId = this.manager.getActiveTabId();
-        const config = getConfig();
 
         // Dispose old buttons
         this.disposeButtons();
@@ -38,7 +37,7 @@ export class StatusBarManager {
         // Create new buttons for each tab
         tabs.forEach((tab, index) => {
             const isActive = tab.id === activeTabId;
-            const button = this.createTabButton(tab, index, isActive, config.showFileCount);
+            const button = this.createTabButton(tab, index, isActive);
             this.tabButtons.push(button);
         });
     }
@@ -46,32 +45,15 @@ export class StatusBarManager {
     private createTabButton(
         tab: RepoTab,
         index: number,
-        isActive: boolean,
-        showFileCount: boolean
+        isActive: boolean
     ): TabButton {
         const statusBarItem = vscode.window.createStatusBarItem(
             vscode.StatusBarAlignment.Left,
             StatusBarManager.BASE_PRIORITY - index
         );
 
-        // Build label
-        let label = `${tab.icon} ${tab.name}`;
-
-        // Add file count
-        if (showFileCount && tab.openEditors.length > 0) {
-            label += ` (${tab.openEditors.length})`;
-        }
-
-        // Add git info
-        if (tab.gitBranch) {
-            const dirtyIndicator = tab.gitDirty ? '●' : '';
-            label += ` $(git-branch) ${tab.gitBranch}${dirtyIndicator}`;
-        }
-
-        // Add shortcut hint for first 9 tabs
-        if (index < 9) {
-            label = `[${index + 1}] ${label}`;
-        }
+        // Build label: only icon + repo name
+        const label = `${tab.icon} ${tab.name}`;
 
         statusBarItem.text = label;
         statusBarItem.tooltip = this.buildTooltip(tab, index);
@@ -138,4 +120,3 @@ export class StatusBarManager {
         }
     }
 }
-

@@ -4,6 +4,10 @@
   "description": "Browser-style workspace tabs - isolate editors, explorer, and state per repository",
   "version": "1.0.0",
   "publisher": "easypick",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wanseh/repoTabs.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
@@ -145,11 +149,6 @@
           "default": true,
           "description": "Enable RepoTabs extension"
         },
-        "repoTabs.showFileCount": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show open file count in each tab"
-        },
         "repoTabs.autoSwitchOnFileOpen": {
           "type": "boolean",
           "default": false,
@@ -159,11 +158,6 @@
           "type": "boolean",
           "default": false,
           "description": "Keep editors open when switching tabs (only change focus)"
-        },
-        "repoTabs.showGitStatus": {
-          "type": "boolean",
-          "default": true,
-          "description": "Show git status indicator on tabs"
         }
       }
     }
@@ -174,13 +168,14 @@
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile",
     "lint": "eslint src --ext ts",
-    "package": "vsce package --no-dependencies"
+    "package": "npx @vscode/vsce package --no-dependencies"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.13.0",
     "@typescript-eslint/parser": "^6.13.0",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^8.54.0",
     "typescript": "^5.3.2"
   }
