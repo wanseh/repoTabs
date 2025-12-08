@@ -66,9 +66,9 @@ export class RepoTabManager {
             );
         });
 
-        // Update icons for all existing tabs (in case they had old emoji icons)
+        // Update icons for all existing tabs
         for (const tab of this.tabs) {
-            tab.icon = this.detectProjectIcon(tab.folderPath);
+            tab.icon = this.detectProjectIcon();
         }
 
         // Update git status for all tabs
@@ -156,16 +156,11 @@ export class RepoTabManager {
             viewStates: {},
             gitBranch: null,
             gitDirty: false,
-            icon: this.detectProjectIcon(folderPath),
+            icon: this.detectProjectIcon(),
         };
     }
 
-    private createTabFromFolder(folder: vscode.WorkspaceFolder): RepoTab {
-        return this.createTabFromPath(folder.uri.fsPath);
-    }
-
-    private detectProjectIcon(_folderPath: string): string {
-        // Use folder icon for all repos (VS Code codicon)
+    private detectProjectIcon(): string {
         return '$(folder)';
     }
 
@@ -463,23 +458,18 @@ export class RepoTabManager {
         try {
             const folderUri = vscode.Uri.file(tab.folderPath);
             
-            // Focus the files explorer
             await vscode.commands.executeCommand('workbench.files.action.focusFilesExplorer');
-            
-            // Collapse all folders first
             await vscode.commands.executeCommand('workbench.files.action.collapseExplorerFolders');
             
-            // Small delay to ensure collapse completes
+            // Wait for collapse to complete
             await new Promise(resolve => setTimeout(resolve, 150));
             
-            // Reveal the folder in explorer (this selects and expands it)
+            // Reveal and expand the active repo folder
             await vscode.commands.executeCommand('revealInExplorer', folderUri);
-            
-            // Small delay then expand the selected folder
             await new Promise(resolve => setTimeout(resolve, 100));
             await vscode.commands.executeCommand('list.expand');
         } catch {
-            // Explorer command might not be available
+            // Ignore if explorer commands are unavailable
         }
     }
 

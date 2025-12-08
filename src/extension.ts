@@ -21,14 +21,9 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
 
     statusBarManager = new StatusBarManager(repoTabManager);
 
-    // Set context for keybinding conditions
     await vscode.commands.executeCommand('setContext', 'repoTabs.active', true);
 
-    // ─────────────────────────────────────────────────────────────
     // Register Commands
-    // ─────────────────────────────────────────────────────────────
-
-    // Switch to tab 1-9
     for (let i = 1; i <= 9; i++) {
         context.subscriptions.push(
             vscode.commands.registerCommand(`repoTabs.switchToTab${i}`, async () => {
@@ -37,14 +32,11 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         );
     }
 
-    // Switch by click (from status bar)
     context.subscriptions.push(
         vscode.commands.registerCommand('repoTabs.switchToTabByClick', async (tabId: string) => {
             await repoTabManager.switchToTab(tabId);
         })
     );
-
-    // Next/Previous tab
     context.subscriptions.push(
         vscode.commands.registerCommand('repoTabs.nextTab', async () => {
             await repoTabManager.nextTab();
@@ -57,16 +49,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         })
     );
 
-    // Show all files (disable tab isolation temporarily)
-    context.subscriptions.push(
-        vscode.commands.registerCommand('repoTabs.showAllFiles', async () => {
-            vscode.window.showInformationMessage(
-                'RepoTabs: Showing all workspace files. Switch tabs to re-isolate.'
-            );
-        })
-    );
-
-    // Refresh tabs
     context.subscriptions.push(
         vscode.commands.registerCommand('repoTabs.refresh', () => {
             repoTabManager.refresh();
@@ -75,9 +57,7 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         })
     );
 
-    // ─────────────────────────────────────────────────────────────
     // Event Listeners
-    // ─────────────────────────────────────────────────────────────
 
     // Track file opens
     context.subscriptions.push(
@@ -114,10 +94,6 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             }
         })
     );
-
-    // ─────────────────────────────────────────────────────────────
-    // Cleanup
-    // ─────────────────────────────────────────────────────────────
 
     context.subscriptions.push({
         dispose: () => {

@@ -65,10 +65,6 @@
         "title": "RepoTabs: Previous Tab"
       },
       {
-        "command": "repoTabs.showAllFiles",
-        "title": "RepoTabs: Show All Files (Disable Filter)"
-      },
-      {
         "command": "repoTabs.refresh",
         "title": "RepoTabs: Refresh Tabs"
       }

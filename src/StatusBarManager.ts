@@ -85,7 +85,7 @@ export class StatusBarManager {
         const md = new vscode.MarkdownString();
         md.isTrusted = true;
 
-        md.appendMarkdown(`### ${tab.icon} ${tab.name}\n\n`);
+        md.appendMarkdown(`### ${tab.name}\n\n`);
         md.appendMarkdown(`**Path:** \`${tab.folderPath}\`\n\n`);
 
         if (tab.gitBranch) {
