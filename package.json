@@ -1,0 +1,187 @@
+{
+  "name": "repo-tabs",
+  "displayName": "RepoTabs",
+  "description": "Browser-style workspace tabs - isolate editors, explorer, and state per repository",
+  "version": "1.0.0",
+  "publisher": "easypick",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "repoTabs.switchToTab1",
+        "title": "RepoTabs: Switch to Tab 1"
+      },
+      {
+        "command": "repoTabs.switchToTab2",
+        "title": "RepoTabs: Switch to Tab 2"
+      },
+      {
+        "command": "repoTabs.switchToTab3",
+        "title": "RepoTabs: Switch to Tab 3"
+      },
+      {
+        "command": "repoTabs.switchToTab4",
+        "title": "RepoTabs: Switch to Tab 4"
+      },
+      {
+        "command": "repoTabs.switchToTab5",
+        "title": "RepoTabs: Switch to Tab 5"
+      },
+      {
+        "command": "repoTabs.switchToTab6",
+        "title": "RepoTabs: Switch to Tab 6"
+      },
+      {
+        "command": "repoTabs.switchToTab7",
+        "title": "RepoTabs: Switch to Tab 7"
+      },
+      {
+        "command": "repoTabs.switchToTab8",
+        "title": "RepoTabs: Switch to Tab 8"
+      },
+      {
+        "command": "repoTabs.switchToTab9",
+        "title": "RepoTabs: Switch to Tab 9"
+      },
+      {
+        "command": "repoTabs.nextTab",
+        "title": "RepoTabs: Next Tab"
+      },
+      {
+        "command": "repoTabs.previousTab",
+        "title": "RepoTabs: Previous Tab"
+      },
+      {
+        "command": "repoTabs.showAllFiles",
+        "title": "RepoTabs: Show All Files (Disable Filter)"
+      },
+      {
+        "command": "repoTabs.refresh",
+        "title": "RepoTabs: Refresh Tabs"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "repoTabs.switchToTab1",
+        "key": "ctrl+1",
+        "mac": "cmd+1",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab2",
+        "key": "ctrl+2",
+        "mac": "cmd+2",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab3",
+        "key": "ctrl+3",
+        "mac": "cmd+3",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab4",
+        "key": "ctrl+4",
+        "mac": "cmd+4",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab5",
+        "key": "ctrl+5",
+        "mac": "cmd+5",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab6",
+        "key": "ctrl+6",
+        "mac": "cmd+6",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab7",
+        "key": "ctrl+7",
+        "mac": "cmd+7",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab8",
+        "key": "ctrl+8",
+        "mac": "cmd+8",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.switchToTab9",
+        "key": "ctrl+9",
+        "mac": "cmd+9",
+        "when": "repoTabs.active"
+      },
+      {
+        "command": "repoTabs.nextTab",
+        "key": "ctrl+tab",
+        "mac": "ctrl+tab",
+        "when": "repoTabs.active && !editorTextFocus"
+      },
+      {
+        "command": "repoTabs.previousTab",
+        "key": "ctrl+shift+tab",
+        "mac": "ctrl+shift+tab",
+        "when": "repoTabs.active && !editorTextFocus"
+      }
+    ],
+    "configuration": {
+      "title": "RepoTabs",
+      "properties": {
+        "repoTabs.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable RepoTabs extension"
+        },
+        "repoTabs.showFileCount": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show open file count in each tab"
+        },
+        "repoTabs.autoSwitchOnFileOpen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically switch to repo when opening a file from it"
+        },
+        "repoTabs.preserveEditorsAcrossTabs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Keep editors open when switching tabs (only change focus)"
+        },
+        "repoTabs.showGitStatus": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show git status indicator on tabs"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile",
+    "lint": "eslint src --ext ts",
+    "package": "vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "@typescript-eslint/eslint-plugin": "^6.13.0",
+    "@typescript-eslint/parser": "^6.13.0",
+    "eslint": "^8.54.0",
+    "typescript": "^5.3.2"
+  }
+}
