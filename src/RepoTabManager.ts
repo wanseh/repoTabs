@@ -66,6 +66,11 @@ export class RepoTabManager {
             );
         });
 
+        // Update icons for all existing tabs (in case they had old emoji icons)
+        for (const tab of this.tabs) {
+            tab.icon = this.detectProjectIcon(tab.folderPath);
+        }
+
         // Update git status for all tabs
         this.updateAllGitStatus();
 
@@ -159,37 +164,9 @@ export class RepoTabManager {
         return this.createTabFromPath(folder.uri.fsPath);
     }
 
-    private detectProjectIcon(folderPath: string): string {
-        try {
-            // Framework icons - using VS Code codicons
-            if (fs.existsSync(path.join(folderPath, 'angular.json'))) return '$(symbol-class)'; // Angular
-            if (fs.existsSync(path.join(folderPath, 'next.config.js')) ||
-                fs.existsSync(path.join(folderPath, 'next.config.mjs'))) return '$(file-code)'; // Next.js
-            if (fs.existsSync(path.join(folderPath, 'nuxt.config.ts')) ||
-                fs.existsSync(path.join(folderPath, 'nuxt.config.js'))) return '$(file-code)'; // Nuxt
-            if (fs.existsSync(path.join(folderPath, 'svelte.config.js'))) return '$(file-code)'; // Svelte
-            if (fs.existsSync(path.join(folderPath, 'vite.config.js')) ||
-                fs.existsSync(path.join(folderPath, 'vite.config.ts'))) return '$(zap)'; // Vite
-
-            // Generic JS / Node projects
-            if (fs.existsSync(path.join(folderPath, 'package.json'))) return '$(package)'; // Node.js
-
-            // Language-specific icons
-            if (fs.existsSync(path.join(folderPath, 'Cargo.toml'))) return '$(gear)'; // Rust
-            if (fs.existsSync(path.join(folderPath, 'go.mod'))) return '$(code)'; // Go
-            if (fs.existsSync(path.join(folderPath, 'pyproject.toml')) ||
-                fs.existsSync(path.join(folderPath, 'requirements.txt'))) return '$(file-code)'; // Python
-            if (fs.existsSync(path.join(folderPath, 'pom.xml')) ||
-                fs.existsSync(path.join(folderPath, 'build.gradle'))) return '$(file-code)'; // Java
-            if (fs.existsSync(path.join(folderPath, 'Gemfile'))) return '$(file-code)'; // Ruby
-
-            // Git-only repo
-            if (fs.existsSync(path.join(folderPath, '.git'))) return '$(git-branch)'; // Git
-
-        } catch {
-            // Ignore fs errors
-        }
-        return '$(folder)'; // Default folder icon
+    private detectProjectIcon(_folderPath: string): string {
+        // Use folder icon for all repos (VS Code codicon)
+        return '$(folder)';
     }
 
     private async updateAllGitStatus(): Promise<void> {
@@ -484,13 +461,23 @@ export class RepoTabManager {
 
     private async focusExplorerOnRepo(tab: RepoTab): Promise<void> {
         try {
-            const folderUri = vscode.Uri.parse(tab.folderUri);
+            const folderUri = vscode.Uri.file(tab.folderPath);
             
             // Focus the files explorer
             await vscode.commands.executeCommand('workbench.files.action.focusFilesExplorer');
             
-            // Reveal the folder in explorer
+            // Collapse all folders first
+            await vscode.commands.executeCommand('workbench.files.action.collapseExplorerFolders');
+            
+            // Small delay to ensure collapse completes
+            await new Promise(resolve => setTimeout(resolve, 150));
+            
+            // Reveal the folder in explorer (this selects and expands it)
             await vscode.commands.executeCommand('revealInExplorer', folderUri);
+            
+            // Small delay then expand the selected folder
+            await new Promise(resolve => setTimeout(resolve, 100));
+            await vscode.commands.executeCommand('list.expand');
         } catch {
             // Explorer command might not be available
         }

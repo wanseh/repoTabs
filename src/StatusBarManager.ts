@@ -86,19 +86,19 @@ export class StatusBarManager {
         md.isTrusted = true;
 
         md.appendMarkdown(`### ${tab.icon} ${tab.name}\n\n`);
-        md.appendMarkdown(`📂 \`${tab.folderPath}\`\n\n`);
+        md.appendMarkdown(`**Path:** \`${tab.folderPath}\`\n\n`);
 
         if (tab.gitBranch) {
             const status = tab.gitDirty ? '(modified)' : '(clean)';
-            md.appendMarkdown(`🔀 **Branch:** ${tab.gitBranch} ${status}\n\n`);
+            md.appendMarkdown(`**Branch:** ${tab.gitBranch} ${status}\n\n`);
         }
 
         if (tab.openEditors.length > 0) {
-            md.appendMarkdown(`📑 **Open files:** ${tab.openEditors.length}\n\n`);
+            md.appendMarkdown(`**Open files:** ${tab.openEditors.length}\n\n`);
         }
 
         if (index < 9) {
-            md.appendMarkdown(`⌨️ **Shortcut:** \`Cmd+${index + 1}\` / \`Ctrl+${index + 1}\`\n\n`);
+            md.appendMarkdown(`**Shortcut:** \`Cmd+${index + 1}\` / \`Ctrl+${index + 1}\`\n\n`);
         }
 
         md.appendMarkdown(`---\n*Click to switch*`);

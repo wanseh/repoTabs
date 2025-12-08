@@ -19,7 +19,7 @@ export interface RepoTab {
     gitBranch: string | null;
     /** Whether this repo has uncommitted changes */
     gitDirty: boolean;
-    /** Icon emoji based on project type */
+    /** Icon codicon based on project type */
     icon: string;
 }
 
