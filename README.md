@@ -1,5 +1,7 @@
 # RepoTabs
 
+> **⚠️ Beta Version** - This extension is currently in beta. Features may change and bugs may occur. Please report any issues!
+
 Browser-style workspace tabs for VS Code / Cursor. Isolate editors, explorer focus, and state per repository in multi-root workspaces.
 
 ## Features
@@ -25,7 +27,12 @@ This gives you a "browser tab" experience where each repo has its own isolated w
 
 ## Installation
 
-### From VSIX (Development)
+**Note:** This extension is not available on the VS Code Marketplace. You must build and install it locally.
+
+### Build and Install
+
+1. Clone or download this repository
+2. Build and package the extension:
 
 ```bash
 cd repoTab
@@ -34,12 +41,24 @@ npm run compile
 npm run package
 ```
 
-Then install the `.vsix` file:
-- Open Command Palette (`Cmd+Shift+P`)
-- Run "Extensions: Install from VSIX..."
-- Select the generated `.vsix` file
+3. Install the generated `.vsix` file using one of the following commands:
 
-### From Source (Development)
+**For Cursor:**
+```bash
+cursor --install-extension repo-tabs-1.0.0.vsix --force
+```
+
+**For VS Code:**
+```bash
+code --install-extension repo-tabs-1.0.0.vsix --force
+```
+
+**Or install manually:**
+- Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
+- Run "Extensions: Install from VSIX..."
+- Select the generated `repo-tabs-1.0.0.vsix` file
+
+### Development Mode
 
 1. Open this folder in VS Code / Cursor
 2. Run `npm install`
