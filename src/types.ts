@@ -38,6 +38,7 @@ export interface RepoTabsConfig {
     enabled: boolean;
     autoSwitchOnFileOpen: boolean;
     preserveEditorsAcrossTabs: boolean;
+    autoFocusExplorer: boolean;
 }
 
 export function getConfig(): RepoTabsConfig {
@@ -46,6 +47,7 @@ export function getConfig(): RepoTabsConfig {
         enabled: config.get<boolean>('enabled', true),
         autoSwitchOnFileOpen: config.get<boolean>('autoSwitchOnFileOpen', false),
         preserveEditorsAcrossTabs: config.get<boolean>('preserveEditorsAcrossTabs', false),
+        autoFocusExplorer: config.get<boolean>('autoFocusExplorer', false),
     };
 }
 

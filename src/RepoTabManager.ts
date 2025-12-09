@@ -455,21 +455,20 @@ export class RepoTabManager {
     }
 
     private async focusExplorerOnRepo(tab: RepoTab): Promise<void> {
+        const config = getConfig();
+        if (!config.autoFocusExplorer) return;
+
         try {
             const folderUri = vscode.Uri.file(tab.folderPath);
             
-            await vscode.commands.executeCommand('workbench.files.action.focusFilesExplorer');
             await vscode.commands.executeCommand('workbench.files.action.collapseExplorerFolders');
-            
-            // Wait for collapse to complete
             await new Promise(resolve => setTimeout(resolve, 150));
             
-            // Reveal and expand the active repo folder
             await vscode.commands.executeCommand('revealInExplorer', folderUri);
             await new Promise(resolve => setTimeout(resolve, 100));
             await vscode.commands.executeCommand('list.expand');
         } catch {
-            // Ignore if explorer commands are unavailable
+            // Ignore if explorer commands unavailable
         }
     }
 

@@ -67,6 +67,10 @@
       {
         "command": "repoTabs.refresh",
         "title": "RepoTabs: Refresh Tabs"
+      },
+      {
+        "command": "repoTabs.quickOpen",
+        "title": "RepoTabs: Quick Open (Filtered to Active Repo)"
       }
     ],
     "keybindings": [
@@ -135,6 +139,12 @@
         "key": "ctrl+shift+tab",
         "mac": "ctrl+shift+tab",
         "when": "repoTabs.active && !editorTextFocus"
+      },
+      {
+        "command": "repoTabs.quickOpen",
+        "key": "ctrl+p",
+        "mac": "cmd+p",
+        "when": "repoTabs.active"
       }
     ],
     "configuration": {
@@ -154,6 +164,11 @@
           "type": "boolean",
           "default": false,
           "description": "Keep editors open when switching tabs (only change focus)"
+        },
+        "repoTabs.autoFocusExplorer": {
+          "type": "boolean",
+          "default": false,
+          "description": "Auto collapse/expand folders in explorer when switching tabs (opens sidebar if closed)"
         }
       }
     }

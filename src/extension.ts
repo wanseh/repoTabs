@@ -57,6 +57,20 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
         })
     );
 
+    // Quick Open filtered to active repo using native VS Code Quick Open
+    context.subscriptions.push(
+        vscode.commands.registerCommand('repoTabs.quickOpen', async () => {
+            const activeTab = repoTabManager.getActiveTab();
+            if (!activeTab) {
+                await vscode.commands.executeCommand('workbench.action.quickOpen');
+                return;
+            }
+
+            // Use native Quick Open with repo name prefix for filtering
+            await vscode.commands.executeCommand('workbench.action.quickOpen', `${activeTab.name}/`);
+        })
+    );
+
     // Event Listeners
 
     // Track file opens
