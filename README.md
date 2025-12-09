@@ -10,7 +10,7 @@ Browser-style workspace tabs for VS Code / Cursor. Isolate editors, explorer foc
 - **Keyboard Shortcuts** - `Cmd+1-9` (Mac) / `Ctrl+1-9` (Win/Linux) to switch
 - **Explorer Focus** - Automatically focuses explorer on the active repo
 - **Git Integration** - Shows branch name and dirty status per repo
-- **Project Icons** - Auto-detects project type (Angular, Node, Python, etc.)
+- **Quick Open Filtering** - `Cmd+P` / `Ctrl+P` filters files to the active repository
 
 ## How It Works
 
@@ -63,15 +63,15 @@ Then install the `.vsix` file:
 Tabs appear in the left side of the status bar:
 
 ```
-[1] my-api (3) main● | [2] my-frontend (5) dev | [3] scripts
-     ^    ^     ^   ^          ^        ^
-     |    |     |   |          |        |
-   index icon name files    branch   dirty
+$(folder) my-api | $(folder) my-frontend | $(folder) scripts
+     ^        ^          ^           ^
+     |        |          |           |
+   icon     name      icon        name
 ```
 
 - **Active tab** is highlighted
-- **File count** shows open editors in that tab
-- **Git branch** and dirty indicator (●) if available
+- Shows **icon** and **repo name** only
+- **Hover** to see full path, git branch, open files, and keyboard shortcut
 
 ## Configuration
 
@@ -80,6 +80,7 @@ Tabs appear in the left side of the status bar:
 | `repoTabs.enabled` | `true` | Enable/disable the extension |
 | `repoTabs.autoSwitchOnFileOpen` | `false` | Auto-switch when opening a file from another repo |
 | `repoTabs.preserveEditorsAcrossTabs` | `false` | Keep editors open when switching (only change focus) |
+| `repoTabs.autoFocusExplorer` | `false` | Auto collapse/expand folders in explorer when switching tabs (only if sidebar is open) |
 
 ## Commands
 
@@ -89,26 +90,7 @@ Tabs appear in the left side of the status bar:
 | `RepoTabs: Next Tab` | Switch to next tab |
 | `RepoTabs: Previous Tab` | Switch to previous tab |
 | `RepoTabs: Refresh Tabs` | Refresh tabs from workspace |
-
-## Project Icons
-
-RepoTabs auto-detects project types and shows appropriate icons using VS Code codicons:
-
-| Icon | Project Type |
-|------|-------------|
-| `$(symbol-class)` | Angular |
-| `$(file-code)` | Next.js |
-| `$(file-code)` | Nuxt |
-| `$(file-code)` | Svelte |
-| `$(zap)` | Vite |
-| `$(package)` | Node.js |
-| `$(gear)` | Rust |
-| `$(code)` | Go |
-| `$(file-code)` | Python |
-| `$(file-code)` | Java |
-| `$(file-code)` | Ruby |
-| `$(git-branch)` | Git repo |
-| `$(folder)` | Folder |
+| `RepoTabs: Quick Open (Filtered to Active Repo)` | Open Quick Open filtered to active repository |
 
 ## Known Limitations
 
@@ -153,7 +135,28 @@ npm run package
 
 ## License
 
-MIT
+MIT License
+
+Copyright (c) 2025 WansehDev
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
 
 ## Contributing
 
