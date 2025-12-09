@@ -3,7 +3,7 @@
   "displayName": "RepoTabs",
   "description": "Browser-style workspace tabs - isolate editors, explorer, and state per repository",
   "version": "1.0.0",
-  "publisher": "easypick",
+  "publisher": "wansehDev",
   "repository": {
     "type": "git",
     "url": "https://github.com/wanseh/repoTabs.git"
